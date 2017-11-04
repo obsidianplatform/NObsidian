@@ -123,7 +123,7 @@ namespace NBitcoin
             consensus.BuriedDeployments[BuriedDeployments.BIP65] = 388381;
             consensus.BuriedDeployments[BuriedDeployments.BIP66] = 363725;
             consensus.BIP34Hash = new uint256("0x000000000000024b89b42a942fe0d9fea3bb44ab7bd1b19115dd6a759c0808b8");
-            consensus.PowLimit = new Target(new uint256("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"));
+            consensus.PowLimit = new Target(new uint256("000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffff")); // ODN
             consensus.PowTargetTimespan = TimeSpan.FromSeconds(14 * 24 * 60 * 60); // two weeks
             consensus.PowTargetSpacing = TimeSpan.FromSeconds(10 * 60);
             consensus.PowAllowMinDifficultyBlocks = false;
@@ -142,60 +142,56 @@ namespace NBitcoin
 
 			consensus.CoinType = 105;
 
-			var genesis = CreateStratisGenesisBlock(1470467000, 1831645, 0x1e0fffff, 1, Money.Zero);
+			var genesis = CreateStratisGenesisBlock(1503532800, 36151509, consensus.PowLimit.ToCompact(), 1, Money.Zero); // ODN
 			consensus.HashGenesisBlock = genesis.GetHash();
 
-			// The message start string is designed to be unlikely to occur in normal data.
-			// The characters are rarely used upper ASCII, not valid as UTF-8, and produce
-			// a large 4-byte int at any alignment.
-			var pchMessageStart = new byte[4];
-            pchMessageStart[0] = 0x70;
-            pchMessageStart[1] = 0x35;
-            pchMessageStart[2] = 0x22;
-            pchMessageStart[3] = 0x05;
-			var magic = BitConverter.ToUInt32(pchMessageStart, 0); //0x5223570; 
+			var pchMessageStart = new byte[4]; // ODN
+            pchMessageStart[0] = 0x4f;
+            pchMessageStart[1] = 0x64;
+            pchMessageStart[2] = 0x6e;
+            pchMessageStart[3] = 0x31;
+			var magic = BitConverter.ToUInt32(pchMessageStart, 0);
 
-			assert(consensus.HashGenesisBlock == uint256.Parse("0x0000066e91e46e5a264d42c89e1204963b2ee6be230b443e9159020539d972af"));
-			assert(genesis.Header.HashMerkleRoot == uint256.Parse("0x65a26bc20b0351aebf05829daefa8f7db2f800623439f3c114257c91447f1518"));
+			assert(consensus.HashGenesisBlock == uint256.Parse("0x0000006dd8a92f58e952fa61c9402b74a381a69d1930fb5cc12c73273fab5f0a")); // ODN
+			assert(genesis.Header.HashMerkleRoot == uint256.Parse("0x062e0ef40ca83213f645710bf497cc68220d42ac2254d31bbc8fb64a4d207209")); // ODN
 
 			var builder = new NetworkBuilder()
 				.SetName("StratisMain")
 				.SetConsensus(consensus)
 				.SetMagic(magic)
 				.SetGenesis(genesis)
-				.SetPort(16178)
-				.SetRPCPort(16174)
+				.SetPort(56660) // ODN
+				.SetRPCPort(56661) // ODN
 				.SetTxFees(10000, 60000, 10000)
 #if !NOSOCKET
 
 				.AddDNSSeeds(new[]
 				{
-					new DNSSeedData("seednode1.stratisplatform.com", "seednode1.stratisplatform.com"),
-					new DNSSeedData("seednode2.stratis.cloud", "seednode2.stratis.cloud"),
-					new DNSSeedData("seednode3.stratisplatform.com", "seednode3.stratisplatform.com"),
-					new DNSSeedData("seednode4.stratis.cloud", "seednode4.stratis.cloud")
+					new DNSSeedData("obsidianblockchain1.westeurope.cloudapp.azure.com", "obsidianblockchain1.westeurope.cloudapp.azure.com"),
+					new DNSSeedData("obsidianblockchain2.westeurope.cloudapp.azure.com", "obsidianblockchain2.westeurope.cloudapp.azure.com"),
+					new DNSSeedData("obsidianseednode1.westeurope.cloudapp.azure.com", "obsidianseednode1.westeurope.cloudapp.azure.com")
 				})
 #endif
 
 				//vAlertPubKey = Encoders.Hex.DecodeData("0486bce1bac0d543f104cbff2bd23680056a3b9ea05e1137d2ff90eeb5e08472eb500322593a2cb06fbf8297d7beb6cd30cb90f98153b5b7cce1493749e41e0284");
 
-				.SetBase58Bytes(Base58Type.PUBKEY_ADDRESS, new byte[] {(63)})
-				.SetBase58Bytes(Base58Type.SCRIPT_ADDRESS, new byte[] {(125)})
-				.SetBase58Bytes(Base58Type.SECRET_KEY, new byte[] {(63 + 128)})
-				.SetBase58Bytes(Base58Type.ENCRYPTED_SECRET_KEY_NO_EC, new byte[] {0x01, 0x42})
-				.SetBase58Bytes(Base58Type.ENCRYPTED_SECRET_KEY_EC, new byte[] {0x01, 0x43})
-				.SetBase58Bytes(Base58Type.EXT_PUBLIC_KEY, new byte[] {(0x04), (0x88), (0xB2), (0x1E)})
-				.SetBase58Bytes(Base58Type.EXT_SECRET_KEY, new byte[] {(0x04), (0x88), (0xAD), (0xE4)})
-				.SetBase58Bytes(Base58Type.PASSPHRASE_CODE, new byte[] {0x2C, 0xE9, 0xB3, 0xE1, 0xFF, 0x39, 0xE2})
-				.SetBase58Bytes(Base58Type.CONFIRMATION_CODE, new byte[] {0x64, 0x3B, 0xF6, 0xA8, 0x9A})
-				.SetBase58Bytes(Base58Type.STEALTH_ADDRESS, new byte[] {0x2a})
-				.SetBase58Bytes(Base58Type.ASSET_ID, new byte[] {23})
-				.SetBase58Bytes(Base58Type.COLORED_ADDRESS, new byte[] {0x13})
+				.SetBase58Bytes(Base58Type.PUBKEY_ADDRESS, new byte[] { (75) }) // ODN
+				.SetBase58Bytes(Base58Type.SCRIPT_ADDRESS, new byte[] { (125) })
+				.SetBase58Bytes(Base58Type.SECRET_KEY, new byte[] { (75 + 128) }) // ODN
+				.SetBase58Bytes(Base58Type.ENCRYPTED_SECRET_KEY_NO_EC, new byte[] { 0x01, 0x42 })
+				.SetBase58Bytes(Base58Type.ENCRYPTED_SECRET_KEY_EC, new byte[] { 0x01, 0x43 })
+				.SetBase58Bytes(Base58Type.EXT_PUBLIC_KEY, new byte[] { (0x04), (0x88), (0xC2), (0x1E) }) // ODN
+				.SetBase58Bytes(Base58Type.EXT_SECRET_KEY, new byte[] { (0x04), (0x88), (0xB2), (0xDD) }) // ODN
+				.SetBase58Bytes(Base58Type.PASSPHRASE_CODE, new byte[] { 0x2C, 0xE9, 0xB3, 0xE1, 0xFF, 0x39, 0xE2 })
+				.SetBase58Bytes(Base58Type.CONFIRMATION_CODE, new byte[] { 0x64, 0x3B, 0xF6, 0xA8, 0x9A })
+				.SetBase58Bytes(Base58Type.STEALTH_ADDRESS, new byte[] { 0x2a })
+				.SetBase58Bytes(Base58Type.ASSET_ID, new byte[] { 23 })
+				.SetBase58Bytes(Base58Type.COLORED_ADDRESS, new byte[] { 0x13 })
 				.SetBech32(Bech32Type.WITNESS_PUBKEY_ADDRESS, "bc")
 				.SetBech32(Bech32Type.WITNESS_SCRIPT_ADDRESS, "bc");
 
 #if !NOSOCKET
-			var seed = new[] { "101.200.198.155", "103.24.76.21", "104.172.24.79" };
+			var seed = new[] { "104.45.21.229", "23.101.75.57", "40.68.27.143" }; // ODN
 			var vFixedSeeds = new List<NetworkAddress>();
 			// Convert the pnSeeds array into usable address objects.
 			Random rand = new Random();
@@ -324,7 +320,7 @@ namespace NBitcoin
 
 		private static Block CreateStratisGenesisBlock(uint nTime, uint nNonce, uint nBits, int nVersion, Money genesisReward)
         {
-            string pszTimestamp = "http://www.theonion.com/article/olympics-head-priestess-slits-throat-official-rio--53466";
+            string pszTimestamp = "https://en.wikipedia.org/w/index.php?title=Brave_New_World&id=796766418";
             return CreateStratisGenesisBlock(pszTimestamp, nTime, nNonce, nBits, nVersion, genesisReward);
         }
 

@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 
 namespace NBitcoin
 {
@@ -194,9 +195,17 @@ namespace NBitcoin
 			return h;
 		}
 
-		public uint256 GetPoWHash()
+		public uint256 GetPoWHash() // ODN
 		{
-			return HashX13.Instance.Hash(this.ToBytes());
+			var blockBytes = this.ToBytes();
+			byte[] sha512256 = new byte[32];
+			using (var sha512 = SHA512.Create())
+			{
+				var sha512Full = sha512.ComputeHash(blockBytes);
+				Buffer.BlockCopy(sha512Full, 0, sha512256, 0, 32);
+			}
+			return new uint256(sha512256);
+			// return HashX13.Instance.Hash(this.ToBytes());
 		}
 
 		/// <summary>
