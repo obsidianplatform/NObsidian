@@ -191,7 +191,7 @@ namespace NBitcoin
 				.SetBech32(Bech32Type.WITNESS_SCRIPT_ADDRESS, "bc");
 
 #if !NOSOCKET
-			var seed = new[] { "104.45.21.229", "23.101.75.57", "40.68.27.143" }; // ODN
+			var seed = new[] { "138.68.191.239", "104.131.9.93", "139.59.173.104" }; // ODN
 			var vFixedSeeds = new List<NetworkAddress>();
 			// Convert the pnSeeds array into usable address objects.
 			Random rand = new Random();
